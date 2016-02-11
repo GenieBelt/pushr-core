@@ -76,7 +76,7 @@ end
 Pushr::Core.configure do |config|
   x = { }
   x[:namespace] = connection[:namespace] if connection[:namespace]
-  x[:url] = "redis://#{connection[:host]}:#{connection[:port] || 6379}/#{connection[:db] || 0}" if connection[:host]
+  x[:url] = "redis://#{connection[:host] || "127.0.0.1"}:#{connection[:port] || 6379}/#{connection[:db] || 0}"
   if connection[:redis]
     json_params = ::MultiJson.load(connection[:redis])
     redis_params = Hash.new
@@ -106,6 +106,12 @@ if ENV['AIRBRAKE_API_KEY']
     airbrake.host    = ENV['AIRBRAKE_HOST']
     airbrake.port    = ENV['AIRBRAKE_PORT'] ? ENV['AIRBRAKE_PORT'].to_i : 80
     airbrake.secure  = airbrake.port == 443
+  end
+end
+
+if ENV['ROLLBAR_API_KEY']
+  Rollbar.configure do |config|
+    config.access_token = ENV['ROLLBAR_API_KEY']
   end
 end
 
